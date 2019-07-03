@@ -29,13 +29,29 @@ int main(int argc, char ** argv) {
 
     glutInit(&argc, argv);
 
-    //Aqui que acontece a mágica!!!
+    int width = 900; //define a largura da janela
+    int height = 600; //define a altura da janela
+
     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
-    glutCreateWindow("Primeiro Programa");
+    glutCreateWindow("Robô Humanoide!");
+
+    //recupera as dimenções da tela
+    int widthTela = glutGet(GLUT_SCREEN_WIDTH);
+    int heightTela = glutGet(GLUT_SCREEN_HEIGHT); 
+
+    //centraliza a janela no centro da tela
+    glutPositionWindow((widthTela-width)/2, (heightTela-height)/2);
+    glutReshapeWindow(width, height);
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+
+    
     glutDisplayFunc(Desenha);
 
     Inicializa();
 
     glutMainLoop();
+
 }
 
