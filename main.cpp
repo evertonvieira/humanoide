@@ -7,11 +7,12 @@
 
 using namespace std;
 
-
 //cabeçalho das funções
 void desenhaPernas(); //desenha as pernas 
 void desenhaCorpo(); //desenha o corpo 
-void drawGarra();
+void drawHead(void);
+void drawHand(void);
+void drawBracos(void);
 
 
 
@@ -48,6 +49,17 @@ float lenghtPlatform = 10.0;
 float heightPlatform = 0.4;
 float diameterBase = 2.0;
 float heightBase = 0.5;
+
+// Parâmetros da cabeça
+float widthHead = lenghtPlatform / 5;
+float heightHead = lenghtPlatform / 9;
+float depthHead = heightBase + 1;
+
+// Parâmetros
+float widthBody = lenghtPlatform / 2;
+float heightBody = lenghtPlatform / 5;
+float depthBody = heightBase + 2;
+
 
 float eyeDistance = 30.0;
 float eyeX;
@@ -374,11 +386,11 @@ void drawScene(void) {
 	glMaterialfv(GL_FRONT, GL_SPECULAR, semEspecularidade);
 	glMateriali(GL_FRONT, GL_SHININESS, 0);
 
-	
+
 	//// monta a base da animação
-	drawCube(lenghtPlatform, lenghtPlatform, heightPlatform);
+	drawCube(lenghtPlatform*2, lenghtPlatform*2, heightPlatform);
 	//glPopMatrix();
-   
+
 	if (textureOn) {
 		glColor3f(0.9f, 0.9f, 0.9f);
 		glMaterialfv(GL_FRONT, GL_SPECULAR, especularidade);
@@ -390,54 +402,238 @@ void drawScene(void) {
 		glMateriali(GL_FRONT, GL_SHININESS, especMaterialNoTexture);
 	}
 
-    //monta as pernas
-    desenhaPernas();
+	//monta as pernas	
+	desenhaPernas();
 	desenhaCorpo();
-	drawGarra();
+	drawBracos();
+	drawHead();
 
 	glutSwapBuffers();
 }
 
-void desenhaCorpo(){
+void drawHead(void) {
+	glTranslatef(0.0f, 0.0f, heightBase + 11.5);
+	glPushMatrix();
+	drawCylinder(diameterCylinder / 2, sizeArm / 5);
+
+	//Cabeça
+	glTranslatef(0.0f, 0.0f, heightBase + 1.7);
+	drawCube(widthHead, heightHead, depthHead);
+
+	//Antena
+	glPushMatrix();
+	glTranslatef(0.0f, 0.0f, heightBase + 1);
+	drawCylinder(diameterCylinder / 3, sizeArm / 3);
+	glTranslatef(0.0f, 0.0f, heightBase + 1);
+	drawSphere(diameterSphere);
+	glPopMatrix();
+
+	//Olhos bocas
+	glPushMatrix();
+	glTranslatef(heightBase + 0.5, heightBase + 1, heightBase + 0.3);
+	glRotatef(angleForearm, 1.0f, 0.0f, 0.0f);
+	drawCylinder(diameterCylinder + 0.2, sizeArm / 10);
+	drawDisk(0, diameterCylinder + 0.2);
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(-(heightBase + 0.5), heightBase + 1, heightBase + 0.3);
+	glRotatef(angleForearm, 1.0f, 0.0f, 0.0f);
+	drawCylinder(diameterCylinder + 0.2, sizeArm / 10);
+	drawDisk(0, diameterCylinder + 0.2);
+	glPopMatrix();
+
+	glTranslatef(0.0f, heightBase + 0.8, -0.5);
+	glRotatef(angleForearm, 1.0f, 0.0f, 0.0f);
+	glPushMatrix();
+	drawCube(widthHead / 2, heightHead / 2, depthHead / 10);
+	glPopMatrix();
+
+	glPopMatrix();
+
+
+}
+void desenhaCorpo() {
 	glPushMatrix();
 	glTranslatef(0, 0, 8);  // aqui eu mudo o referencial para subir a bolinha   
-	drawCube(3,2,4);
+	drawCube(3, 2, 4);
 	glPopMatrix();
 }
 
-void desenhaPernas(){
+void drawHand(void) {
+	//draws the hand
+	drawSphere(diameterSphere);
+	glTranslatef(0.0f, 0.0f, diameterSphere / 5);
+	drawCylinder(diameterCylinder, sizeHand);
+
+	// move to clamp referential
+	glTranslatef(0.0f, 0.0f, sizeHand + diameterSphere / 5);
+	glRotatef(angleClampZ, 0.0f, 0.0f, 1.0f);
+
+	//draws the clamp sphere
+	drawSphere(diameterSphere);
+	glTranslatef(0.0f, 0.0f, diameterSphere / 2);
+
+	glPushMatrix();
+
+	//draws top part of clamp
+	glRotatef(angleClampY + 60, 0.0f, 1.0f, 0.0f);
+
+	drawCylinder(diameterCylinder / 3, sizeClampPart);
+	glTranslatef(0.0f, 0.0f, sizeClampPart + diameterSphere / 15);
+	drawSphere(diameterSphere / 3);
+
+	glTranslatef(0.0f, 0.0f, diameterSphere / 15);
+	glRotatef(-60, 0.0f, 1.0f, 0.0f);
+
+	drawCylinder(diameterCylinder / 3, sizeClampPart);
+	glTranslatef(0.0f, 0.0f, sizeClampPart + diameterSphere / 15);
+	drawSphere(diameterSphere / 3);
+
+	glTranslatef(0.0f, 0.0f, diameterSphere / 15);
+	glRotatef(-60, 0.0f, 1.0f, 0.0f);
+	drawCone(diameterCylinder / 3, sizeClampPart);
+
+	glPopMatrix();
+	glPushMatrix();
+
+	//draws bottom part of clamp
+	glRotatef(-angleClampY - 60, 0.0f, 1.0f, 0.0f);
+
+	drawCylinder(diameterCylinder / 3, sizeClampPart);
+	glTranslatef(0.0f, 0.0f, sizeClampPart + diameterSphere / 15);
+	drawSphere(diameterSphere / 3);
+
+	glTranslatef(0.0f, 0.0f, diameterSphere / 15);
+	glRotatef(60, 0.0f, 1.0f, 0.0f);
+
+	drawCylinder(diameterCylinder / 3, sizeClampPart);
+	glTranslatef(0.0f, 0.0f, sizeClampPart + diameterSphere / 15);
+	drawSphere(diameterSphere / 3);
+
+	glTranslatef(0.0f, 0.0f, diameterSphere / 15);
+	glRotatef(60, 0.0f, 1.0f, 0.0f);
+	drawCone(diameterCylinder / 3, sizeClampPart);
+
+	glPopMatrix();
+
+	// rotate to draw other two parts
+	glRotatef(90, 0.0f, 0.0f, 1.0f);
+
+	glPushMatrix();
+
+	//draws top part of clamp
+	glRotatef(angleClampY + 60, 0.0f, 1.0f, 0.0f);
+
+	drawCylinder(diameterCylinder / 3, sizeClampPart);
+	glTranslatef(0.0f, 0.0f, sizeClampPart + diameterSphere / 15);
+	drawSphere(diameterSphere / 3);
+
+	glTranslatef(0.0f, 0.0f, diameterSphere / 15);
+	glRotatef(-60, 0.0f, 1.0f, 0.0f);
+
+	drawCylinder(diameterCylinder / 3, sizeClampPart);
+	glTranslatef(0.0f, 0.0f, sizeClampPart + diameterSphere / 15);
+	drawSphere(diameterSphere / 3);
+
+	glTranslatef(0.0f, 0.0f, diameterSphere / 15);
+	glRotatef(-60, 0.0f, 1.0f, 0.0f);
+	drawCone(diameterCylinder / 3, sizeClampPart);
+
+	glPopMatrix();
+
+	//draws bottom part of clamp
+	glRotatef(-angleClampY - 60, 0.0f, 1.0f, 0.0f);
+
+	drawCylinder(diameterCylinder / 3, sizeClampPart);
+	glTranslatef(0.0f, 0.0f, sizeClampPart + diameterSphere / 15);
+	drawSphere(diameterSphere / 3);
+
+	glTranslatef(0.0f, 0.0f, diameterSphere / 15);
+	glRotatef(60, 0.0f, 1.0f, 0.0f);
+
+	drawCylinder(diameterCylinder / 3, sizeClampPart);
+	glTranslatef(0.0f, 0.0f, sizeClampPart + diameterSphere / 15);
+	drawSphere(diameterSphere / 3);
+
+	glTranslatef(0.0f, 0.0f, diameterSphere / 15);
+	glRotatef(60, 0.0f, 1.0f, 0.0f);
+	drawCone(diameterCylinder / 3, sizeClampPart);
+}
+void drawBracos(void) {
+	//Braço esquerdo
+	glPushMatrix();
+	//draws the forearm
+	glTranslatef(3.6, 0.0f, heightBase + 10);
+	drawSphere(diameterSphere + 0.5);
+	glTranslatef(0.0f, 0.0f, -diameterSphere / 5);
+	glPushMatrix();
+	glRotatef(-(angleForearm * 2), 1.0f, 0.0f, 0.0f);
+	drawCylinder(diameterCylinder, sizeForearm + 1);
+	glPopMatrix();
+	glTranslatef(0.0f, 0.0f, -(diameterSphere + 3));
+	drawSphere(diameterSphere + 0.1);
+	glRotatef(-(120.0), 1.0f, 0.0f, 0.0f);
+	drawCylinder(diameterCylinder, sizeForearm - 0.8);
+	drawHand();
+	glPopMatrix();
+
+	//braço direito
+	glPushMatrix();
+	//draws the forearm
+	glTranslatef(-(3.6), 0.0f, heightBase + 10);
+	drawSphere(diameterSphere + 0.5);
+	glTranslatef(0.0f, 0.0f, -diameterSphere / 5);
+	glPushMatrix();
+	glRotatef(-(angleForearm * 2), 1.0f, 0.0f, 0.0f);
+	drawCylinder(diameterCylinder, sizeForearm + 1);
+	glPopMatrix();
+	glTranslatef(0.0f, 0.0f, -(diameterSphere + 3));
+	drawSphere(diameterSphere + 0.1);
+	glRotatef(-(120.0), 1.0f, 0.0f, 0.0f);
+	drawCylinder(diameterCylinder, sizeForearm - 0.8);
+
+	drawHand();
+
+	glPopMatrix();
+
+
+}
+
+
+void desenhaPernas() {
 
 	//monta perna esquerda
-    glPushMatrix();
+	glPushMatrix();
 	glTranslatef(2, 0, heightBase*2.5);  // aqui eu mudo o referencial para subir a bolinha   
 	drawSphere(diameterSphere);
 	glTranslatef(0.0f, 0.0f, diameterSphere / 5); // aqui o referencial é a bolinha
 	glPushMatrix();
-    glRotatef( 95, 0.0f, 1.0f, 0.0f); ///rotaciono antebraço
+	glRotatef(95, 0.0f, 1.0f, 0.0f); ///rotaciono antebraço
 	drawCylinder(diameterCylinder / 3, sizeClampPart); // aqui eu crio o antebraço 
 	glTranslatef(0.0f, 0.0f, sizeClampPart + diameterSphere / 15); // aqui eu mudo o referencial para o andebraço
 	drawSphere(diameterSphere / 3); //aqui eu crio a articulação
-    glRotatef(40, 0.0f, 1.0f, 0.0f); ///rotaciono antebraço
-    glTranslatef(0.0f, 0.0f, diameterSphere / 5); // mudo o referencial para a articulação
-    
-    drawCone(diameterCylinder / 3, sizeClampPart);// crio a mão (garra)
-    glPopMatrix(); // aqui eu termino e vou começar o outro braço ou garra
-    glPushMatrix();
+	glRotatef(40, 0.0f, 1.0f, 0.0f); ///rotaciono antebraço
+	glTranslatef(0.0f, 0.0f, diameterSphere / 5); // mudo o referencial para a articulação
 
-    glRotatef(-95, 0.0f, 1.0f, 0.0f); ///rotaciono antebraço
-    drawCylinder(diameterCylinder / 3, sizeClampPart);
+	drawCone(diameterCylinder / 3, sizeClampPart);// crio a mão (garra)
+	glPopMatrix(); // aqui eu termino e vou começar o outro braço ou garra
+	glPushMatrix();
+
+	glRotatef(-95, 0.0f, 1.0f, 0.0f); ///rotaciono antebraço
+	drawCylinder(diameterCylinder / 3, sizeClampPart);
 	glTranslatef(0.0f, 0.0f, sizeClampPart + diameterSphere / 15); // aqui eu mudo o referencial para o andebraço
 
-    drawSphere(diameterSphere / 3); //aqui eu crio a articulação
-    glRotatef(-40, 0.0f, 1.0f, 0.0f); ///rotaciono antebraço
+	drawSphere(diameterSphere / 3); //aqui eu crio a articulação
+	glRotatef(-40, 0.0f, 1.0f, 0.0f); ///rotaciono antebraço
 
-    glTranslatef(0.0f, 0.0f, diameterSphere / 5);
-    drawCone(diameterCylinder / 3, sizeClampPart);// crio a mão (garra)
-	glPopMatrix(); 
+	glTranslatef(0.0f, 0.0f, diameterSphere / 5);
+	drawCone(diameterCylinder / 3, sizeClampPart);// crio a mão (garra)
+	glPopMatrix();
 	glPushMatrix();
 
 	glRotatef(95, 1.0f, 0.0f, 0.0f); ///rotaciono antebraço
-   	drawCylinder(diameterCylinder / 3, sizeClampPart); // aqui eu crio o antebraço
+	drawCylinder(diameterCylinder / 3, sizeClampPart); // aqui eu crio o antebraço
 	glTranslatef(0.0f, 0.0f, sizeClampPart + diameterSphere / 15);
 	drawSphere(diameterSphere / 3); //aqui eu crio a articulação
 	glRotatef(40, 1.0f, 0.0f, 0.0f); ///rotaciono antebraço
@@ -445,7 +641,7 @@ void desenhaPernas(){
 	glTranslatef(0.0f, 0.0f, diameterSphere / 5);
 	drawCone(diameterCylinder / 3, sizeClampPart);// crio a mão (garra)
 	glPopMatrix(); // aqui eu termino e vou começar o outro braço ou garra
-	
+
 	glPushMatrix();
 	glRotatef(-95, 1.0f, 0.0f, 0.0f); ///rotaciono antebraço
 	drawCylinder(diameterCylinder / 3, sizeClampPart);
@@ -458,7 +654,6 @@ void desenhaPernas(){
 
 	glPopMatrix();
 	drawCylinder(diameterCylinder, sizeForearm);
-
 
 
 	//monta perna direita
@@ -492,7 +687,7 @@ void desenhaPernas(){
 	glPopMatrix();
 	glPushMatrix();
 	glRotatef(95, 0.0f, 1.0f, 0.0f); ///rotaciono antebraço
-	drawCylinder(diameterCylinder / 3 , sizeClampPart); // aqui eu crio o antebraço
+	drawCylinder(diameterCylinder / 3, sizeClampPart); // aqui eu crio o antebraço
 	glTranslatef(0.0f, 0.0f, sizeClampPart + diameterSphere / 15);
 	drawSphere(diameterSphere / 3);
 	glTranslatef(0.0f, 0.0f, diameterSphere / 5);
@@ -500,24 +695,24 @@ void desenhaPernas(){
 	drawCone(diameterCylinder / 3, sizeClampPart);// crio a mão (garra)
 
 	glPopMatrix();
-	
+
 	glPushMatrix();
 	glRotatef(-95, 0.0f, 1.0f, 0.0f); ///rotaciono antebraço
 
-	drawCylinder(diameterCylinder / 3 , sizeClampPart); // aqui eu crio o antebraço
+	drawCylinder(diameterCylinder / 3, sizeClampPart); // aqui eu crio o antebraço
 	glTranslatef(0.0f, 0.0f, sizeClampPart + diameterSphere / 15);
 
 	drawSphere(diameterSphere / 3);
 	glTranslatef(0.0f, 0.0f, diameterSphere / 5);
 	glRotatef(-40, 0.0f, 1.0f, 0.0f); ///rotaciono antebraço
 	drawCone(diameterCylinder / 3, sizeClampPart);// crio a mão (garra)
-	
+
 	glPopMatrix();
 	drawCylinder(diameterCylinder, sizeForearm);
-	glPopMatrix();
+	glPopMatrix();	
 }
 
-void changeView(int key, int x, int y){
+void changeView(int key, int x, int y) {
 	switch (key) {
 	case 27: //Escape key
 		exit(0);
@@ -538,133 +733,6 @@ void changeView(int key, int x, int y){
 		glutPostRedisplay();
 		break;
 	}
-}
-void drawGarra (){
-    //draws the base
-	//drawCylinder(diameterBase, heightBase);
-	// glTranslatef(0.0f, 0.0f, heightBase);
-	// drawDisk(diameterCylinder, diameterBase);
-
-	// // move to arm referential
-	// //glRotatef(angleArm, 0.0f, 0.0f, 1.0f);
-
-	//  //draws the arm
-	// drawCylinder(diameterCylinder, sizeArm);
-    
-
-	// // move to forearm referential
-	// glTranslatef(0.0f, 0.0f, sizeArm + diameterSphere / 5);
-	// glRotatef(angleForearm, 0.0f, 1.0f, 0.0f);
-
-	// // //draws the forearm
-	// drawSphere(diameterSphere);
-	// glTranslatef(0.0f, 0.0f, diameterSphere / 5);
-	// drawCylinder(diameterCylinder, sizeForearm);
-
-	// //move to hand referential
-	// glTranslatef(0.0f, 0.0f, sizeForearm + diameterSphere / 5);
-	// glRotatef(angleHand, 0.0f, 1.0f, 0.0f);
-
-	// //draws the hand
-	// drawSphere(diameterSphere);
-	// glTranslatef(0.0f, 0.0f, diameterSphere / 5);
-	// drawCylinder(diameterCylinder, sizeHand);
-
-	// // move to clamp referential
-	// glTranslatef(0.0f, 0.0f, sizeHand + diameterSphere / 5);
-	// glRotatef(angleClampZ, 0.0f, 0.0f, 1.0f);
-
-	// //draws the clamp sphere
-	// drawSphere(diameterSphere);
-	// glTranslatef(0.0f, 0.0f, diameterSphere / 2);
-
-	// glPushMatrix();
-
-
-    // /////GARRASSSSSS
-	// //draws top part of clamp
-	// glRotatef(angleClampY + 60, 0.0f, 1.0f, 0.0f);
-
-	// drawCylinder(diameterCylinder / 3, sizeClampPart);
-	// glTranslatef(0.0f, 0.0f, sizeClampPart + diameterSphere / 15);
-	// drawSphere(diameterSphere / 3);
-
-	// glTranslatef(0.0f, 0.0f, diameterSphere / 15);
-	// glRotatef(-60, 0.0f, 1.0f, 0.0f);
-
-	// drawCylinder(diameterCylinder / 3, sizeClampPart);
-	// glTranslatef(0.0f, 0.0f, sizeClampPart + diameterSphere / 15);
-	// drawSphere(diameterSphere / 3);
-
-	// glTranslatef(0.0f, 0.0f, diameterSphere / 15);
-	// glRotatef(-60, 0.0f, 1.0f, 0.0f);
-	// drawCone(diameterCylinder / 3, sizeClampPart);
-
-	// glPopMatrix();
-	// glPushMatrix();
-
-	// //draws bottom part of clamp
-	// glRotatef(-angleClampY - 60, 0.0f, 1.0f, 0.0f);
-
-	// drawCylinder(diameterCylinder / 3, sizeClampPart);
-	// glTranslatef(0.0f, 0.0f, sizeClampPart + diameterSphere / 15);
-	// drawSphere(diameterSphere / 3);
-
-	// glTranslatef(0.0f, 0.0f, diameterSphere / 15);
-	// glRotatef(60, 0.0f, 1.0f, 0.0f);
-
-	// drawCylinder(diameterCylinder / 3, sizeClampPart);
-	// glTranslatef(0.0f, 0.0f, sizeClampPart + diameterSphere / 15);
-	// drawSphere(diameterSphere / 3);
-
-	// glTranslatef(0.0f, 0.0f, diameterSphere / 15);
-	// glRotatef(60, 0.0f, 1.0f, 0.0f);
-	// drawCone(diameterCylinder / 3, sizeClampPart);
-
-	// glPopMatrix();
-
-	// // rotate to draw other two parts
-	// glRotatef(90, 0.0f, 0.0f, 1.0f);
-
-	// glPushMatrix();
-
-	// //draws top part of clamp
-	// glRotatef(angleClampY + 60, 0.0f, 1.0f, 0.0f);
-
-	// drawCylinder(diameterCylinder / 3, sizeClampPart);
-	// glTranslatef(0.0f, 0.0f, sizeClampPart + diameterSphere / 15);
-	// drawSphere(diameterSphere / 3);
-
-	// glTranslatef(0.0f, 0.0f, diameterSphere / 15);
-	// glRotatef(-60, 0.0f, 1.0f, 0.0f);
-
-	// drawCylinder(diameterCylinder / 3, sizeClampPart);
-	// glTranslatef(0.0f, 0.0f, sizeClampPart + diameterSphere / 15);
-	// drawSphere(diameterSphere / 3);
-
-	// glTranslatef(0.0f, 0.0f, diameterSphere / 15);
-	// glRotatef(-60, 0.0f, 1.0f, 0.0f);
-	// drawCone(diameterCylinder / 3, sizeClampPart);
-
-	// glPopMatrix();
-
-	// //draws bottom part of clamp
-	// glRotatef(-angleClampY - 60, 0.0f, 1.0f, 0.0f);
-
-	// drawCylinder(diameterCylinder / 3, sizeClampPart);
-	// glTranslatef(0.0f, 0.0f, sizeClampPart + diameterSphere / 15);
-	// drawSphere(diameterSphere / 3);
-
-	// glTranslatef(0.0f, 0.0f, diameterSphere / 15);
-	// glRotatef(60, 0.0f, 1.0f, 0.0f);
-
-	// drawCylinder(diameterCylinder / 3, sizeClampPart);
-	// glTranslatef(0.0f, 0.0f, sizeClampPart + diameterSphere / 15);
-	// drawSphere(diameterSphere / 3);
-
-	// glTranslatef(0.0f, 0.0f, diameterSphere / 15);
-	// glRotatef(60, 0.0f, 1.0f, 0.0f);
-	// drawCone(diameterCylinder / 3, sizeClampPart);
 }
 
 int main(int argc, char** argv) {
