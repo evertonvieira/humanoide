@@ -19,9 +19,9 @@ char* filenameTexMetal1 = (char*)"./metalTexture1.bmp";
 char* filenameTexMetal2 = (char*)"./metalTexture2.bmp";
 char* filenameTexMetal3 = (char*)"./metalTexture3.bmp";
 char* filenameTexMetal4 = (char*)"./metalTexture4.bmp";
-char* filenameTexTop = (char*)"./woodTextureTop.bmp";
-char* filenameTexFront = (char*)"./woodTextureFront.bmp";
-char* filenameTexSide = (char*)"./woodTextureSide.bmp";
+char* filenameTexTop = (char*)"./texturas/lateral.bmp";
+char* filenameTexFront = (char*)"./texturas/plano.bmp";
+char* filenameTexSide = (char*)"./texturas/lateral.bmp";
 
 GLuint _textureIdMetal1;
 GLuint _textureIdMetal2;
@@ -413,45 +413,45 @@ void desenhaPernas(){
 	drawSphere(diameterSphere);
 	glTranslatef(0.0f, 0.0f, diameterSphere / 5); // aqui o referencial é a bolinha
 	glPushMatrix();
-    glRotatef(angleClampY + 95, 0.0f, 1.0f, 0.0f); ///rotaciono antebraço
+    glRotatef( 95, 0.0f, 1.0f, 0.0f); ///rotaciono antebraço
 	drawCylinder(diameterCylinder / 3, sizeClampPart); // aqui eu crio o antebraço 
 	glTranslatef(0.0f, 0.0f, sizeClampPart + diameterSphere / 15); // aqui eu mudo o referencial para o andebraço
 	drawSphere(diameterSphere / 3); //aqui eu crio a articulação
-    glRotatef(angleClampY + 40, 0.0f, 1.0f, 0.0f); ///rotaciono antebraço
+    glRotatef(40, 0.0f, 1.0f, 0.0f); ///rotaciono antebraço
     glTranslatef(0.0f, 0.0f, diameterSphere / 5); // mudo o referencial para a articulação
     
     drawCone(diameterCylinder / 3, sizeClampPart);// crio a mão (garra)
     glPopMatrix(); // aqui eu termino e vou começar o outro braço ou garra
     glPushMatrix();
 
-    glRotatef(-angleClampY - 95, 0.0f, 1.0f, 0.0f); ///rotaciono antebraço
+    glRotatef(-95, 0.0f, 1.0f, 0.0f); ///rotaciono antebraço
     drawCylinder(diameterCylinder / 3, sizeClampPart);
 	glTranslatef(0.0f, 0.0f, sizeClampPart + diameterSphere / 15); // aqui eu mudo o referencial para o andebraço
 
     drawSphere(diameterSphere / 3); //aqui eu crio a articulação
-    glRotatef(-angleClampY - 40, 0.0f, 1.0f, 0.0f); ///rotaciono antebraço
+    glRotatef(-40, 0.0f, 1.0f, 0.0f); ///rotaciono antebraço
 
     glTranslatef(0.0f, 0.0f, diameterSphere / 5);
     drawCone(diameterCylinder / 3, sizeClampPart);// crio a mão (garra)
 	glPopMatrix(); 
 	glPushMatrix();
 
-	glRotatef(angleClampY + 95, 1.0f, 0.0f, 0.0f); ///rotaciono antebraço
+	glRotatef(95, 1.0f, 0.0f, 0.0f); ///rotaciono antebraço
    	drawCylinder(diameterCylinder / 3, sizeClampPart); // aqui eu crio o antebraço
 	glTranslatef(0.0f, 0.0f, sizeClampPart + diameterSphere / 15);
 	drawSphere(diameterSphere / 3); //aqui eu crio a articulação
-	glRotatef(angleClampY + 40, 1.0f, 0.0f, 0.0f); ///rotaciono antebraço
+	glRotatef(40, 1.0f, 0.0f, 0.0f); ///rotaciono antebraço
 
 	glTranslatef(0.0f, 0.0f, diameterSphere / 5);
 	drawCone(diameterCylinder / 3, sizeClampPart);// crio a mão (garra)
 	glPopMatrix(); // aqui eu termino e vou começar o outro braço ou garra
 	
 	glPushMatrix();
-	glRotatef(-angleClampY - 95, 1.0f, 0.0f, 0.0f); ///rotaciono antebraço
+	glRotatef(-95, 1.0f, 0.0f, 0.0f); ///rotaciono antebraço
 	drawCylinder(diameterCylinder / 3, sizeClampPart);
 	glTranslatef(0.0f, 0.0f, sizeClampPart + diameterSphere / 15);
 	drawSphere(diameterSphere / 3); //aqui eu crio a articulação
-	glRotatef(-angleClampY - 40, 1.0f, 0.0f, 0.0f); ///rotaciono antebraço
+	glRotatef(-40, 1.0f, 0.0f, 0.0f); ///rotaciono antebraço
 
 	glTranslatef(0.0f, 0.0f, diameterSphere / 5);
 	drawCone(diameterCylinder / 3, sizeClampPart);// crio a mão (garra)
@@ -469,53 +469,52 @@ void desenhaPernas(){
 	drawSphere(diameterSphere);
 	glTranslatef(0.0f, 0.0f, diameterSphere / 5); // aqui o referencial é a bolinha
 	glPushMatrix();
-	glRotatef(angleClampY + 95, 1.0f, 0.0f, 0.0f); ///rotaciono antebraço
+	glRotatef(95, 1.0f, 0.0f, 0.0f); ///rotaciono antebraço
 
 	drawCylinder(diameterCylinder / 3, sizeClampPart); // aqui eu crio o antebraço
 	glTranslatef(0.0f, 0.0f, sizeClampPart + diameterSphere / 15); // aqui o referencial é a bolinha
 	drawSphere(diameterSphere / 3);
 	glTranslatef(0.0f, 0.0f, diameterSphere / 5); // aqui o referencial é a bolinha
-	glRotatef(angleClampY + 40, 1.0f, 0.0f, 0.0f); ///rotaciono antebraço
+	glRotatef(40, 1.0f, 0.0f, 0.0f); ///rotaciono antebraço
 	drawCone(diameterCylinder / 3, sizeClampPart);// crio a mão (garra)
 
 	glPopMatrix();
 	glPushMatrix();
-	glRotatef(-angleClampY - 95, 1.0f, 0.0f, 0.0f); ///rotaciono antebraço
+	glRotatef(-95, 1.0f, 0.0f, 0.0f); ///rotaciono antebraço
 
 	drawCylinder(diameterCylinder / 3, sizeClampPart); // aqui eu crio o antebraço
 	glTranslatef(0.0f, 0.0f, sizeClampPart + diameterSphere / 15); // aqui o referencial é a bolinha
 	drawSphere(diameterSphere / 3);
 	glTranslatef(0.0f, 0.0f, diameterSphere / 5);
-	glRotatef(-angleClampY - 40, 1.0f, 0.0f, 0.0f); ///rotaciono antebraço
+	glRotatef(-40, 1.0f, 0.0f, 0.0f); ///rotaciono antebraço
 	drawCone(diameterCylinder / 3, sizeClampPart);// crio a mão (garra)
 
 	glPopMatrix();
 	glPushMatrix();
-	glRotatef(angleClampY + 95, 0.0f, 1.0f, 0.0f); ///rotaciono antebraço
+	glRotatef(95, 0.0f, 1.0f, 0.0f); ///rotaciono antebraço
 	drawCylinder(diameterCylinder / 3 , sizeClampPart); // aqui eu crio o antebraço
 	glTranslatef(0.0f, 0.0f, sizeClampPart + diameterSphere / 15);
 	drawSphere(diameterSphere / 3);
 	glTranslatef(0.0f, 0.0f, diameterSphere / 5);
-	glRotatef(angleClampY + 40, 0.0f, 1.0f, 0.0f); ///rotaciono antebraço
+	glRotatef(40, 0.0f, 1.0f, 0.0f); ///rotaciono antebraço
 	drawCone(diameterCylinder / 3, sizeClampPart);// crio a mão (garra)
 
 	glPopMatrix();
 	
 	glPushMatrix();
-	glRotatef(-angleClampY - 95, 0.0f, 1.0f, 0.0f); ///rotaciono antebraço
+	glRotatef(-95, 0.0f, 1.0f, 0.0f); ///rotaciono antebraço
 
 	drawCylinder(diameterCylinder / 3 , sizeClampPart); // aqui eu crio o antebraço
 	glTranslatef(0.0f, 0.0f, sizeClampPart + diameterSphere / 15);
 
 	drawSphere(diameterSphere / 3);
 	glTranslatef(0.0f, 0.0f, diameterSphere / 5);
-	glRotatef(-angleClampY - 40, 0.0f, 1.0f, 0.0f); ///rotaciono antebraço
+	glRotatef(-40, 0.0f, 1.0f, 0.0f); ///rotaciono antebraço
 	drawCone(diameterCylinder / 3, sizeClampPart);// crio a mão (garra)
 	
 	glPopMatrix();
 	drawCylinder(diameterCylinder, sizeForearm);
 	glPopMatrix();
-	glutSwapBuffers();
 }
 
 void changeView(int key, int x, int y){
