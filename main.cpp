@@ -11,8 +11,8 @@ using namespace std;
 void desenhaPernas(); //desenha as pernas 
 void desenhaCorpo(); //desenha o corpo 
 void drawHead(void);
-void drawHand(void);
-void drawBracos(void);
+void drawHand(int, int);
+void drawBracos(int, int);
 
 
 
@@ -66,13 +66,25 @@ float eyeX;
 float eyeY;
 float eyeZ;
 float viewAngleX = 0.0;
-float viewAngleZ = 50.0;
+float viewAngleZ = 10.0;
 
 float angleArm = 0.0;
 float angleForearm = 90.0;
 float angleHand = 0.0;
 float angleClampZ = 0.0;
 float angleClampY = 0.0;
+
+// angulos do braço esquerda
+float anguloMaoEsquerdaY = 0.0;
+float anguloBracoEsquerdaY = 90.0;
+float anguloAnteBracoEsquerdaY = 50.0;
+
+
+
+// angulos do braço direito
+float anguloMaoDireitoY = 0.0;
+float anguloBracoDireitoY = 90.0;
+float anguloAnteBracoDireitoY = 50.0;
 
 GLfloat lightposition[4] = { 0.0f, 30.0f, 0.0f, 0.0 };
 GLfloat luzAmbiente[4] = { 0.19, 0.19, 0.19, 0.0 };
@@ -154,22 +166,14 @@ void handleKeypress(unsigned char key, int x, int y) {
 	switch (key) {
 	case 27: //Escape key
 		exit(0);
-	case GLUT_KEY_UP: //Increase view angle z axis
-		if (viewAngleZ < 180) viewAngleZ += 3;
-		glutPostRedisplay();
-		break;
-	case GLUT_KEY_DOWN: //Decrease view angle z axis
-		if (viewAngleZ > 0) viewAngleZ -= 3;
-		glutPostRedisplay();
-		break;
-	case 'a': //Decrease view angle x axis
-		if (viewAngleX > 0) viewAngleX -= 3;
-		glutPostRedisplay();
-		break;
-	case 's': //Increase view angle x axis
-		if (viewAngleX < 180) viewAngleX += 3;
-		glutPostRedisplay();
-		break;
+	// case 'a': //Decrease view angle x axis
+	// 	if (viewAngleX > 0) viewAngleX -= 3;
+	// 	glutPostRedisplay();
+	// 	break;
+	// case 's': //Increase view angle x axis
+	// 	if (viewAngleX < 180) viewAngleX += 3;
+	// 	glutPostRedisplay();
+	// 	break;
 	case 't': //Change metal texture
 		textureOn = true;
 		if (_textureIdSphere == _textureIdMetal1) {
@@ -194,6 +198,60 @@ void handleKeypress(unsigned char key, int x, int y) {
 		textureOn = false;
 		glutPostRedisplay();
 		break;
+	case 'q': //incrementa angula do ombro esquerdo
+		if (anguloBracoEsquerdaY > 0) anguloBracoEsquerdaY -= 3;
+		glutPostRedisplay();
+		break;
+	case 'a': //decrementa angula do ombro esquerdo
+		if (anguloBracoEsquerdaY < 90) anguloBracoEsquerdaY += 3;
+		glutPostRedisplay();
+		break;
+	case 'w': //incrementa angula do andebraco esquerdo
+		if (anguloAnteBracoEsquerdaY < 120) anguloAnteBracoEsquerdaY += 3;
+		glutPostRedisplay();
+		break;
+	case 's': //decrementa angula do andebraco esquerdo
+		if (anguloAnteBracoEsquerdaY > 50) anguloAnteBracoEsquerdaY -= 3;
+		glutPostRedisplay();
+		break;
+			
+	case 'e': //incrementa angula da mão esquerdo
+		if (anguloMaoEsquerdaY < 20) anguloMaoEsquerdaY += 3;
+		glutPostRedisplay();
+		break;
+	case 'd': //decrementa angula da mão esquerdo
+		if (anguloMaoEsquerdaY > 0) anguloMaoEsquerdaY -= 3;
+		glutPostRedisplay();
+		break;
+
+
+	case 'y': //incrementa angula do braço direito
+		if (anguloBracoDireitoY > 0) anguloBracoDireitoY -= 3;
+		glutPostRedisplay();
+		break;
+	case 'h': //decrementa angula do braço direito
+		if (anguloBracoDireitoY < 90) anguloBracoDireitoY += 3;
+		glutPostRedisplay();
+		break;		
+	case 'u': //Increase hand angle
+		if (anguloAnteBracoDireitoY < 120) anguloAnteBracoDireitoY += 3;
+		glutPostRedisplay();
+		break;
+	case 'j': //Decrease hand angle
+		if (anguloAnteBracoDireitoY > 50) anguloAnteBracoDireitoY -= 3;
+		glutPostRedisplay();
+		break;
+	case 'i': //incrementa angula da mão direita
+		if (anguloMaoDireitoY < 20) anguloMaoDireitoY += 3;
+		glutPostRedisplay();
+		break;
+	case 'k': //decrementa angula da mão direita
+		if (anguloMaoDireitoY > 0) anguloMaoDireitoY -= 3;
+		glutPostRedisplay();
+		break;	
+
+	
+
 	case '1': //Increase arm angle
 		angleArm += 3;
 		if (angleArm >= 360) angleArm = 0;
@@ -212,22 +270,7 @@ void handleKeypress(unsigned char key, int x, int y) {
 		if (angleForearm > -90) angleForearm -= 3;
 		glutPostRedisplay();
 		break;
-	case '5': //Increase hand angle
-		if (angleHand < 90) angleHand += 3;
-		glutPostRedisplay();
-		break;
-	case '6': //Decrease hand angle
-		if (angleHand > -90) angleHand -= 3;
-		glutPostRedisplay();
-		break;
-	case '7': //Increase clamp angle y axis
-		if (angleClampY < 60) angleClampY += 3;
-		glutPostRedisplay();
-		break;
-	case '8': //Decrease clamp angle y axis
-		if (angleClampY > 0) angleClampY -= 3;
-		glutPostRedisplay();
-		break;
+	
 	case '9': //Increase clamp angle z axis
 		angleClampZ += 3;
 		if (angleClampZ >= 360) angleClampZ = 0;
@@ -405,7 +448,7 @@ void drawScene(void) {
 	//monta as pernas	
 	desenhaPernas();
 	desenhaCorpo();
-	drawBracos();
+	drawBracos(anguloBracoEsquerdaY, anguloBracoDireitoY);
 	drawHead();
 
 	glutSwapBuffers();
@@ -460,7 +503,7 @@ void desenhaCorpo() {
 	glPopMatrix();
 }
 
-void drawHand(void) {
+void drawHand(int pIntAnguloMao, int pIntAnteBraco) {
 	//draws the hand
 	drawSphere(diameterSphere);
 	glTranslatef(0.0f, 0.0f, diameterSphere / 5);
@@ -477,7 +520,7 @@ void drawHand(void) {
 	glPushMatrix();
 
 	//draws top part of clamp
-	glRotatef(angleClampY + 60, 0.0f, 1.0f, 0.0f);
+	glRotatef(pIntAnguloMao + 60, 0.0f, 1.0f, 0.0f);
 
 	drawCylinder(diameterCylinder / 3, sizeClampPart);
 	glTranslatef(0.0f, 0.0f, sizeClampPart + diameterSphere / 15);
@@ -498,7 +541,7 @@ void drawHand(void) {
 	glPushMatrix();
 
 	//draws bottom part of clamp
-	glRotatef(-angleClampY - 60, 0.0f, 1.0f, 0.0f);
+	glRotatef(-pIntAnguloMao - 60, 0.0f, 1.0f, 0.0f);
 
 	drawCylinder(diameterCylinder / 3, sizeClampPart);
 	glTranslatef(0.0f, 0.0f, sizeClampPart + diameterSphere / 15);
@@ -523,7 +566,7 @@ void drawHand(void) {
 	glPushMatrix();
 
 	//draws top part of clamp
-	glRotatef(angleClampY + 60, 0.0f, 1.0f, 0.0f);
+	glRotatef(pIntAnguloMao + 60, 0.0f, 1.0f, 0.0f);
 
 	drawCylinder(diameterCylinder / 3, sizeClampPart);
 	glTranslatef(0.0f, 0.0f, sizeClampPart + diameterSphere / 15);
@@ -543,7 +586,7 @@ void drawHand(void) {
 	glPopMatrix();
 
 	//draws bottom part of clamp
-	glRotatef(-angleClampY - 60, 0.0f, 1.0f, 0.0f);
+	glRotatef(-pIntAnguloMao - 60, 0.0f, 1.0f, 0.0f);
 
 	drawCylinder(diameterCylinder / 3, sizeClampPart);
 	glTranslatef(0.0f, 0.0f, sizeClampPart + diameterSphere / 15);
@@ -560,43 +603,43 @@ void drawHand(void) {
 	glRotatef(60, 0.0f, 1.0f, 0.0f);
 	drawCone(diameterCylinder / 3, sizeClampPart);
 }
-void drawBracos(void) {
-	//Braço esquerdo
+void drawBracos(int pIntAngBracoEsquerdo, int pIntAngBracoDireito) {
+	
+	//Braço direito
 	glPushMatrix();
 	//draws the forearm
 	glTranslatef(3.6, 0.0f, heightBase + 10);
 	drawSphere(diameterSphere + 0.5);
-	glTranslatef(0.0f, 0.0f, -diameterSphere / 5);
-	glPushMatrix();
-	glRotatef(-(angleForearm * 2), 1.0f, 0.0f, 0.0f);
-	drawCylinder(diameterCylinder, sizeForearm + 1);
-	glPopMatrix();
-	glTranslatef(0.0f, 0.0f, -(diameterSphere + 3));
-	drawSphere(diameterSphere + 0.1);
-	glRotatef(-(120.0), 1.0f, 0.0f, 0.0f);
-	drawCylinder(diameterCylinder, sizeForearm - 0.8);
-	drawHand();
+	glTranslatef(0.0f, 0.0f, (diameterSphere) / 5);
+	//glPushMatrix();
+	glRotatef(-(pIntAngBracoDireito * 2), 1.0f, 0.0f, 0.0f);
+	drawCylinder(diameterCylinder, sizeForearm);
+	glTranslatef(0.0f, 0.0f, sizeForearm + diameterSphere / 15);
+	glRotatef(anguloAnteBracoDireitoY, 1.0f, 0.0f, 0.0f);
+	drawSphere(diameterSphere + 0.2);
+	
+	drawHand(anguloMaoDireitoY, anguloAnteBracoDireitoY);
+	
 	glPopMatrix();
 
-	//braço direito
+	//Braço esquerdo
 	glPushMatrix();
 	//draws the forearm
-	glTranslatef(-(3.6), 0.0f, heightBase + 10);
+	glTranslatef(-3.6, 0.0f, heightBase + 10);
 	drawSphere(diameterSphere + 0.5);
-	glTranslatef(0.0f, 0.0f, -diameterSphere / 5);
-	glPushMatrix();
-	glRotatef(-(angleForearm * 2), 1.0f, 0.0f, 0.0f);
-	drawCylinder(diameterCylinder, sizeForearm + 1);
+	glTranslatef(0.0f, 0.0f, (diameterSphere) / 5);
+	//glPushMatrix();
+	//glRotatef(-(pIntAngBracoDireito * 2), 1.0f, 0.0f, 0.0f);
+	glRotatef(-(pIntAngBracoEsquerdo * 2), 1.0f, 0.0f, 0.0f);
+
+	drawCylinder(diameterCylinder, sizeForearm);
+	glTranslatef(0.0f, 0.0f, sizeForearm + diameterSphere / 15);
+	glRotatef(anguloAnteBracoEsquerdaY, 1.0f, 0.0f, 0.0f);
+	drawSphere(diameterSphere + 0.2);
+	
+	drawHand(anguloMaoEsquerdaY, anguloAnteBracoEsquerdaY);
+	
 	glPopMatrix();
-	glTranslatef(0.0f, 0.0f, -(diameterSphere + 3));
-	drawSphere(diameterSphere + 0.1);
-	glRotatef(-(120.0), 1.0f, 0.0f, 0.0f);
-	drawCylinder(diameterCylinder, sizeForearm - 0.8);
-
-	drawHand();
-
-	glPopMatrix();
-
 
 }
 
