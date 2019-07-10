@@ -20,9 +20,11 @@ char* filenameTexMetal1 = (char*)"./metalTexture1.bmp";
 char* filenameTexMetal2 = (char*)"./metalTexture2.bmp";
 char* filenameTexMetal3 = (char*)"./metalTexture3.bmp";
 char* filenameTexMetal4 = (char*)"./metalTexture4.bmp";
-char* filenameTexTop = (char*)"./texturas/lateral.bmp";
+
 char* filenameTexFront = (char*)"./texturas/plano.bmp";
 char* filenameTexSide = (char*)"./texturas/lateral.bmp";
+char* filenameTexTop = (char*)"./texturas/plano.bmp";
+char* filenameTexFerrugem = (char*)"./texturas/texturaFerrugem.bmp";
 
 GLuint _textureIdMetal1;
 GLuint _textureIdMetal2;
@@ -33,6 +35,7 @@ GLuint _textureIdCylinder;
 GLuint _textureIdPlatformTop;
 GLuint _textureIdPlatformFront;
 GLuint _textureIdPlatformSide;
+GLuint _textureIdRoboFerrugem;
 
 bool textureOn = true;
 
@@ -61,12 +64,12 @@ float heightBody = lenghtPlatform / 5;
 float depthBody = heightBase + 2;
 
 
-float eyeDistance = 30.0;
+float eyeDistance = 35.0;
 float eyeX;
 float eyeY;
 float eyeZ;
 float viewAngleX = 0.0;
-float viewAngleZ = 10.0;
+float viewAngleZ = 35.0;
 
 float angleArm = 0.0;
 float angleForearm = 90.0;
@@ -157,8 +160,11 @@ void initRendering(void) {
 	_textureIdCylinder = _textureIdMetal1;
 	_textureIdSphere = _textureIdMetal1;
 	_textureIdPlatformTop = loadTexture(filenameTexTop);
+	
 	_textureIdPlatformFront = loadTexture(filenameTexFront);
 	_textureIdPlatformSide = loadTexture(filenameTexSide);
+
+	_textureIdRoboFerrugem = loadTexture(filenameTexFerrugem);
 }
 
 void handleKeypress(unsigned char key, int x, int y) {
@@ -292,7 +298,7 @@ void GerenciaMouse(int button, int state, int x, int y)
 {
 	if (button == GLUT_LEFT_BUTTON)
 		if (state == GLUT_DOWN) {  // Zoom-out
-			if (eyeDistance < 30) eyeDistance += 1;
+			if (eyeDistance < 38) eyeDistance += 1;
 		}
 	if (button == GLUT_RIGHT_BUTTON)
 		if (state == GLUT_DOWN) {  // Zoom-out
@@ -310,9 +316,27 @@ void handleResize(int w, int h) {
 
 
 //monta o a base da animação 
-void drawCube(float lenghtX, float lenghtY, float height)
+void drawCube(float lenghtX, float lenghtY, float height, int pIntTextura = 1)
 {
-	glBindTexture(GL_TEXTURE_2D, _textureIdPlatformFront);
+	int textFront = _textureIdPlatformTop;
+	int textSide = _textureIdPlatformSide;
+	int textTop = _textureIdPlatformSide;
+
+	//altera a textura do robo
+	if (pIntTextura == 2){
+		textFront = _textureIdRoboFerrugem;
+		textSide = _textureIdRoboFerrugem;
+		textTop = _textureIdRoboFerrugem;
+	}
+
+	//altera a textura da boca do robô
+	if (pIntTextura == 3){
+		textFront = _textureIdRoboFerrugem;
+		textSide = _textureIdRoboFerrugem;
+		textTop = _textureIdRoboFerrugem;
+	}
+
+	glBindTexture(GL_TEXTURE_2D, textFront);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glBegin(GL_QUADS);			// Face posterior
@@ -327,7 +351,7 @@ void drawCube(float lenghtX, float lenghtY, float height)
 	glTexCoord2f(1.0f, 1.0f); glVertex3f(lenghtX, lenghtY, height);
 	glTexCoord2f(0.0f, 1.0f); glVertex3f(-lenghtX, lenghtY, height);
 	glEnd();
-	glBindTexture(GL_TEXTURE_2D, _textureIdPlatformSide);
+	glBindTexture(GL_TEXTURE_2D, textSide);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glBegin(GL_QUADS);			// Face lateral esquerda
@@ -342,7 +366,7 @@ void drawCube(float lenghtX, float lenghtY, float height)
 	glTexCoord2f(0.0f, 1.0f); glVertex3f(lenghtX, lenghtY, height);
 	glTexCoord2f(0.0f, 0.0f); glVertex3f(lenghtX, -lenghtY, height);
 	glEnd();
-	glBindTexture(GL_TEXTURE_2D, _textureIdPlatformTop);
+	glBindTexture(GL_TEXTURE_2D, textTop);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glBegin(GL_QUADS);			// Face superior
@@ -431,7 +455,7 @@ void drawScene(void) {
 
 
 	//// monta a base da animação
-	drawCube(lenghtPlatform*2, lenghtPlatform*2, heightPlatform);
+	drawCube(lenghtPlatform*1.2, lenghtPlatform*1.2, heightPlatform);
 	//glPopMatrix();
 
 	if (textureOn) {
@@ -461,7 +485,7 @@ void drawHead(void) {
 
 	//Cabeça
 	glTranslatef(0.0f, 0.0f, heightBase + 1.7);
-	drawCube(widthHead, heightHead, depthHead);
+	drawCube(widthHead, heightHead, depthHead, 2);
 
 	//Antena
 	glPushMatrix();
@@ -489,7 +513,7 @@ void drawHead(void) {
 	glTranslatef(0.0f, heightBase + 0.8, -0.5);
 	glRotatef(angleForearm, 1.0f, 0.0f, 0.0f);
 	glPushMatrix();
-	drawCube(widthHead / 2, heightHead / 2, depthHead / 10);
+	drawCube(widthHead / 2, heightHead / 2, depthHead / 10, 2);
 	glPopMatrix();
 
 	glPopMatrix();
@@ -499,7 +523,7 @@ void drawHead(void) {
 void desenhaCorpo() {
 	glPushMatrix();
 	glTranslatef(0, 0, 8);  // aqui eu mudo o referencial para subir a bolinha   
-	drawCube(3, 2, 4);
+	drawCube(3, 2, 4, 2);
 	glPopMatrix();
 }
 
@@ -772,7 +796,7 @@ void changeView(int key, int x, int y) {
 		glutPostRedisplay();
 		break;
 	case GLUT_KEY_LEFT: //Increase view angle x axis
-		if (viewAngleX < 180) viewAngleX += 3;
+		if (viewAngleX < 360) viewAngleX += 3;
 		glutPostRedisplay();
 		break;
 	}
@@ -782,7 +806,7 @@ int main(int argc, char** argv) {
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 	glutInitWindowSize(800, 800);
-	glutCreateWindow("Clamp");
+	glutCreateWindow("Robô Futurama");
 
 	initLighting();
 	initRendering();
